@@ -58,10 +58,15 @@ public class QrCodeServiceImpl implements IQrCodeService {
                 .setQrCornerRadiusRate(codeVO.getRadiusRate())
                 .setPicType(codeVO.getSuffix())
                 .setDrawBgColor(Color.decode(codeVO.getBgColor()))
-                .setDrawPreColor(Color.decode(codeVO.getPreColor()));
+                .setDrawPreColor(Color.decode(codeVO.getPreColor()))
+                .setDetectOutColor(Color.decode(codeVO.getDetectOutColor()))
+                .setDetectInColor(Color.decode(codeVO.getDetectInColor()));
         if (codeVO.getCodeEyeColorSync()) {
             of.setDetectInColor(Color.decode(codeVO.getBgColor()))
                     .setDetectOutColor(Color.decode(codeVO.getBgColor()));
+        }
+        if (null != codeVO.getBgOperacity()) {
+            of.setBgOpacity(codeVO.getBgOperacity());
         }
         BufferedImage image = of.asBufferedImage();
         ImageIO.write(image, "png", outputStream);

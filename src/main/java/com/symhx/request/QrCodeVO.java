@@ -65,6 +65,21 @@ public class QrCodeVO implements Serializable {
     private Boolean codeEyeColorSync = true;
 
     /**
+     * 码眼检测外框颜色
+     */
+    private String detectOutColor = "#000000";
+
+    /**
+     * 码眼检测内颜色
+     */
+    private String detectInColor = "#000000";
+
+    /**
+     * 背景色透明度
+     */
+    private Float bgOperacity = 1F;
+
+    /**
      * 网址
      */
     private String urlAddress;
