@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: symhx-qrcode
+server:
+  port: 6226
