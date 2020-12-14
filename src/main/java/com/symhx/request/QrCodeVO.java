@@ -1,5 +1,6 @@
 package com.symhx.request;
 
+import com.symhx.wrapper.QrCodeOptions;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +11,11 @@ import java.io.Serializable;
  */
 @Data
 public class QrCodeVO implements Serializable {
+
+    /**
+     * 二维码类型
+     */
+    private CodeType codeType;
 
     /**
      * 正文内容
@@ -77,11 +83,102 @@ public class QrCodeVO implements Serializable {
     /**
      * 背景色透明度
      */
-    private Float bgOperacity = 1F;
+    private Float bgOpacity = 1F;
 
     /**
-     * 网址
+     * logo信息
      */
-    private String urlAddress;
+    private LogoInfo logoInfo;
+
+
+    /**
+     * 二维码内容类型
+     */
+    public enum CodeType {
+        /**
+         * 文本类型
+         */
+        textType(1),
+        /**
+         * 网址类型
+         */
+        URLType(2),
+        /**
+         * 文件类型
+         */
+        fileType(3),
+        /**
+         * 图片类型
+         */
+        imageType(4),
+        /**
+         * 音视频
+         */
+        audioAndVideoType(5),
+        /**
+         * 名片
+         */
+        businessCardType(6),
+        /**
+         * 微信
+         */
+        weChatType(7),
+        /**
+         * 公众号
+         */
+        publicType(8),
+        /**
+         * 表单
+         */
+        formType(9);
+        private Integer type;
+
+        CodeType(Integer type) {
+            this.type = type;
+        }
+
+        public void setType(Integer type) {
+            this.type = type;
+        }
+
+        public Integer getType() {
+            return type;
+        }
+    }
+
+    @Data
+    public class LogoInfo {
+        /**
+         * logo地址
+         */
+        private String logoPath;
+
+        /**
+         * logo样式
+         */
+        private String logoStyle;
+
+        /**
+         * logo边框
+         */
+        private Boolean logoBorder;
+
+        /**
+         * 边框颜色
+         */
+        private String logoBorderColor;
+
+        /**
+         * logo背景色
+         */
+        private String logoBgColor;
+
+        /**
+         * logo比率
+         */
+        private Integer rate;
+
+        private Float opacity;
+    }
 
 }

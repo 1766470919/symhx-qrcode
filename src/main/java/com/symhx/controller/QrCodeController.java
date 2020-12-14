@@ -22,8 +22,25 @@ public class QrCodeController {
     @Resource
     private IQrCodeService qrCodeService;
 
-    @RequestMapping(value = "/normal", method = RequestMethod.POST)
-    public void getNormalCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) throws Exception{
-        qrCodeService.getNormalCode(qrCodeVO, response);
+    /**
+     * 常见二维码
+     * @param qrCodeVO
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/commonCode", method = RequestMethod.POST)
+    public void commonQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) throws Exception{
+        qrCodeService.getCommonQRCode(qrCodeVO, response);
+    }
+
+    /**
+     * 个性化二维码
+     * @param qrCodeVO
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/personalizedQRCode", method = RequestMethod.POST)
+    public void personalizedQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) throws Exception {
+        qrCodeService.getPersonalizedQRCode(qrCodeVO, response);
     }
 }

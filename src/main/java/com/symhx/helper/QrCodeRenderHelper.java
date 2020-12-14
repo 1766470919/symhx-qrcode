@@ -402,6 +402,7 @@ public class QrCodeRenderHelper {
         LD,
         RT,
         NONE {
+            @Override
             public boolean detectedArea() {
                 return false;
             }
