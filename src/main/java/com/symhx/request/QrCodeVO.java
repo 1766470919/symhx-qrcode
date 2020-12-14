@@ -1,5 +1,6 @@
 package com.symhx.request;
 
+import com.symhx.gif.GifDecoder;
 import com.symhx.wrapper.QrCodeOptions;
 import lombok.Data;
 
@@ -90,6 +91,10 @@ public class QrCodeVO implements Serializable {
      */
     private LogoInfo logoInfo;
 
+    /**
+     * 背景信息
+     */
+    private BackgroundInfo backgroundInfo;
 
     /**
      * 二维码内容类型
@@ -147,7 +152,7 @@ public class QrCodeVO implements Serializable {
     }
 
     @Data
-    public class LogoInfo {
+    public static class LogoInfo {
         /**
          * logo地址
          */
@@ -179,6 +184,59 @@ public class QrCodeVO implements Serializable {
         private Integer rate;
 
         private Float opacity;
+    }
+
+    @Data
+    public static class BackgroundInfo {
+        /**
+         * 背景地址
+         */
+        private String bgPath;
+
+        /**
+         * 背景样式
+         */
+        private QrCodeOptions.ImgStyle imgStyle;
+
+        /**
+         * 圆角大小
+         */
+        private Float radius = 0F;
+
+        /**
+         * gif解析器
+         */
+        private GifDecoder gifDecoder;
+
+        /**
+         * 背景宽
+         */
+        private Integer bgW;
+
+        /**
+         * 背景高
+         */
+        private Integer bgH;
+
+        /**
+         * 背景填充方式
+         */
+        private QrCodeOptions.BgImgStyle bgImgStyle;
+
+        /**
+         * 背景透明度
+         */
+        private Float opacity = 0.5F;
+
+        /**
+         * 填充开始横坐标
+         */
+        private Integer startX;
+
+        /**
+         * 填充开始纵坐标
+         */
+        private Integer startY;
     }
 
 }

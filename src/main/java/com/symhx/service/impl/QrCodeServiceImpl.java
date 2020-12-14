@@ -152,6 +152,10 @@ public class QrCodeServiceImpl implements IQrCodeService {
         if (null != codeVO.getLogoInfo() && StringUtils.isNotBlank(codeVO.getLogoInfo().getLogoPath())) {
             setLogoInfo(builder, codeVO);
         }
+        // 设置背景
+        if (null != codeVO.getBackgroundInfo() && StringUtils.isNotBlank(codeVO.getBackgroundInfo().getBgPath())) {
+            setBackgroundInfo(builder, codeVO);
+        }
 
 
         BufferedImage image = builder.asBufferedImage();
@@ -178,5 +182,20 @@ public class QrCodeServiceImpl implements IQrCodeService {
         if (null != qrCodeVO.getLogoInfo().getRate()) {
             builder.setLogoRate(qrCodeVO.getLogoInfo().getRate());
         }
+    }
+
+    /**
+     * 二维码背景设置
+     * @param builder
+     * @param qrCodeVO
+     * @throws Exception
+     */
+    private void setBackgroundInfo(QrCodeGenWrapper.Builder builder, QrCodeVO qrCodeVO) throws Exception {
+        builder.setBgImg(qrCodeVO.getBackgroundInfo().getBgPath())
+                .setBgOpacity(qrCodeVO.getBackgroundInfo().getOpacity())
+                .setBgImgStyle(qrCodeVO.getBackgroundInfo().getImgStyle())
+                .setBgW(null != qrCodeVO.getBackgroundInfo().getBgW() ? qrCodeVO.getBackgroundInfo().getBgW() : 200)
+                .setBgH(null != qrCodeVO.getBackgroundInfo().getBgH() ? qrCodeVO.getBackgroundInfo().getBgH() : 200)
+                .setBgStyle(qrCodeVO.getBackgroundInfo().getBgImgStyle());
     }
 }
