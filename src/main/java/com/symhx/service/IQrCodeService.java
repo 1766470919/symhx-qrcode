@@ -15,7 +15,7 @@ public interface IQrCodeService {
      * @param codeVO
      * @param response
      */
-    void getCommonQRCode(QrCodeVO codeVO, HttpServletResponse response) throws Exception;
+    void getCommonQRCode(QrCodeVO codeVO, HttpServletResponse response);
 
     /**
      * 个性二维码
@@ -24,5 +24,5 @@ public interface IQrCodeService {
      * @param response
      * @throws Exception
      */
-    void getPersonalizedQRCode(QrCodeVO codeVO, HttpServletResponse response) throws Exception;
+    void getPersonalizedQRCode(QrCodeVO codeVO, HttpServletResponse response);
 }

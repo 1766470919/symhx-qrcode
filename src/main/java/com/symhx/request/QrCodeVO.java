@@ -226,7 +226,7 @@ public class QrCodeVO implements Serializable {
         /**
          * 背景透明度
          */
-        private Float opacity = 0.5F;
+        private Float opacity = 1F;
 
         /**
          * 填充开始横坐标

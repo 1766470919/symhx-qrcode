@@ -29,7 +29,7 @@ public class QrCodeController {
      * @throws Exception
      */
     @RequestMapping(value = "/commonCode", method = RequestMethod.POST)
-    public void commonQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) throws Exception{
+    public void commonQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) {
         qrCodeService.getCommonQRCode(qrCodeVO, response);
     }
 
@@ -40,7 +40,7 @@ public class QrCodeController {
      * @throws Exception
      */
     @RequestMapping(value = "/personalizedQRCode", method = RequestMethod.POST)
-    public void personalizedQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) throws Exception {
+    public void personalizedQRCode(@RequestBody QrCodeVO qrCodeVO, HttpServletResponse response) {
         qrCodeService.getPersonalizedQRCode(qrCodeVO, response);
     }
 }

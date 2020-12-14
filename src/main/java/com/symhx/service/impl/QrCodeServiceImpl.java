@@ -8,17 +8,13 @@ import com.symhx.wrapper.QrCodeGenWrapper;
 import com.symhx.wrapper.QrCodeOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.PreparedStatement;
 
 /**
  * @author lj
@@ -47,7 +43,7 @@ public class QrCodeServiceImpl implements IQrCodeService {
      * 文本二维码
      * @param content
      */
-    public QrCodeGenWrapper.Builder getTextQRCode(String content) throws Exception{
+    public QrCodeGenWrapper.Builder getTextQRCode(String content) {
         if (StringUtils.isBlank(content)) {
             throw new DiyException("正文内容不能为空");
         }
@@ -56,9 +52,10 @@ public class QrCodeServiceImpl implements IQrCodeService {
 
     /**
      * 网址二维码
+     *
      * @param content
      */
-    public QrCodeGenWrapper.Builder getURLQRCode(String content) throws Exception{
+    public QrCodeGenWrapper.Builder getURLQRCode(String content) {
         if (StringUtils.isBlank(content)) {
             throw new DiyException("网址不能为空");
         }
@@ -75,7 +72,7 @@ public class QrCodeServiceImpl implements IQrCodeService {
      * @param response
      */
     @Override
-    public void getCommonQRCode(QrCodeVO codeVO, HttpServletResponse response) throws Exception{
+    public void getCommonQRCode(QrCodeVO codeVO, HttpServletResponse response) {
         QrCodeGenWrapper.Builder builder = null;
         if (codeVO.getCodeType().equals(QrCodeVO.CodeType.textType)) {
             builder = getTextQRCode(codeVO.getContent());
@@ -83,14 +80,20 @@ public class QrCodeServiceImpl implements IQrCodeService {
             builder = getURLQRCode(codeVO.getContent());
         }
 
-        ServletOutputStream outputStream = response.getOutputStream();
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        response.setContentType("image/png");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType("image/png");
 
-        BufferedImage image = builder.asBufferedImage();
-        ImageIO.write(image, "png", outputStream);
+            BufferedImage image = builder.asBufferedImage();
+            ImageIO.write(image, "png", outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -101,7 +104,7 @@ public class QrCodeServiceImpl implements IQrCodeService {
      * @throws Exception
      */
     @Override
-    public void getPersonalizedQRCode(QrCodeVO codeVO, HttpServletResponse response) throws Exception {
+    public void getPersonalizedQRCode(QrCodeVO codeVO, HttpServletResponse response) {
         QrCodeGenWrapper.Builder builder = null;
         if (codeVO.getCodeType().equals(QrCodeVO.CodeType.textType)) {
             builder = getTextQRCode(codeVO.getContent());
@@ -111,55 +114,59 @@ public class QrCodeServiceImpl implements IQrCodeService {
             builder = getTextQRCode(codeVO.getContent());
         }
 
-        ServletOutputStream outputStream = response.getOutputStream();
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        response.setContentType("image/png");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType("image/png");
 
-        Integer scale = null;
-        if (null != codeVO.getWidth() && null != codeVO.getHeight()) {
-            scale = Math.min(codeVO.getWidth(), codeVO.getHeight());
-        } else {
-            scale = 200;
-        }
-        Integer padding = 0;
-        if (null != codeVO.getPadding()) {
-            padding = codeVO.getPadding();
-        }
+            Integer scale = null;
+            if (null != codeVO.getWidth() && null != codeVO.getHeight()) {
+                scale = Math.min(codeVO.getWidth(), codeVO.getHeight());
+            } else {
+                scale = 200;
+            }
+            Integer padding = 0;
+            if (null != codeVO.getPadding()) {
+                padding = codeVO.getPadding();
+            }
 
-        builder.setW(scale)
-                .setPadding(padding)
-                .setQrStyle(QrCodeOptions.ImgStyle.valueOf(codeVO.getRoundType()))
-                .setQrCornerRadiusRate(codeVO.getRadiusRate())
-                .setPicType(StringUtils.isNotBlank(codeVO.getSuffix()) ? codeVO.getSuffix() : "png")
-                .setDrawBgColor(Color.decode(codeVO.getBgColor()))
-                .setDrawPreColor(Color.decode(codeVO.getPreColor()))
-                .setDetectOutColor(Color.decode(codeVO.getPreColor()))
-                .setDetectInColor(Color.decode(codeVO.getPreColor()));
-        if (!codeVO.getCodeEyeColorSync()) {
-            // 自定义码眼颜色
-            builder.setDetectInColor(Color.decode(codeVO.getDetectInColor()))
-                    .setDetectOutColor(Color.decode(codeVO.getDetectOutColor()))
-                    .setDetectSpecial();
-        }
-        // 透明色背景
+            builder.setW(scale)
+                    .setPadding(padding)
+                    .setQrStyle(QrCodeOptions.ImgStyle.valueOf(codeVO.getRoundType()))
+                    .setQrCornerRadiusRate(codeVO.getRadiusRate())
+                    .setPicType(StringUtils.isNotBlank(codeVO.getSuffix()) ? codeVO.getSuffix() : "png")
+                    .setDrawBgColor(Color.decode(codeVO.getBgColor()))
+                    .setDrawPreColor(Color.decode(codeVO.getPreColor()))
+                    .setDetectOutColor(Color.decode(codeVO.getPreColor()))
+                    .setDetectInColor(Color.decode(codeVO.getPreColor()));
+            if (!codeVO.getCodeEyeColorSync()) {
+                // 自定义码眼颜色
+                builder.setDetectInColor(Color.decode(codeVO.getDetectInColor()))
+                        .setDetectOutColor(Color.decode(codeVO.getDetectOutColor()))
+                        .setDetectSpecial();
+            }
+            // 透明色背景
             if (null != codeVO.getBgOpacity() && codeVO.getBgOpacity().equals(0F)) {
-            builder.setQrStyle(QrCodeOptions.ImgStyle.NORMAL)
-                    .setDrawBgColor(new Color(255, 255, 255, 0));
-        }
-        // 设置Logo
-        if (null != codeVO.getLogoInfo() && StringUtils.isNotBlank(codeVO.getLogoInfo().getLogoPath())) {
-            setLogoInfo(builder, codeVO);
-        }
-        // 设置背景
-        if (null != codeVO.getBackgroundInfo() && StringUtils.isNotBlank(codeVO.getBackgroundInfo().getBgPath())) {
-            setBackgroundInfo(builder, codeVO);
-        }
+                builder.setQrStyle(QrCodeOptions.ImgStyle.NORMAL)
+                        .setDrawBgColor(new Color(255, 255, 255, 0));
+            }
+            // 设置Logo
+            if (null != codeVO.getLogoInfo() && StringUtils.isNotBlank(codeVO.getLogoInfo().getLogoPath())) {
+                setLogoInfo(builder, codeVO);
+            }
+            // 设置背景
+            if (null != codeVO.getBackgroundInfo() && StringUtils.isNotBlank(codeVO.getBackgroundInfo().getBgPath())) {
+                setBackgroundInfo(builder, codeVO);
+            }
 
 
-        BufferedImage image = builder.asBufferedImage();
-        ImageIO.write(image, "png", outputStream);
+            BufferedImage image = builder.asBufferedImage();
+            ImageIO.write(image, "png", outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
