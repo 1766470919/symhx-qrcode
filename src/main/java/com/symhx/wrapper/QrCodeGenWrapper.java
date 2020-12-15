@@ -4,29 +4,47 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.imageio.ImageIO;
+
 import com.symhx.constans.MediaType;
 import com.symhx.constans.QuickQrUtil;
 import com.symhx.gif.GifDecoder;
 import com.symhx.gif.GifHelper;
 import com.symhx.helper.QrCodeGenerateHelper;
-import com.symhx.util.*;
+import com.symhx.util.Base64Util;
+import com.symhx.util.ColorUtil;
+import com.symhx.util.FileReadUtil;
+import com.symhx.util.FileWriteUtil;
+import com.symhx.util.ImageLoadUtil;
+import com.symhx.util.IoUtil;
+import com.symhx.wrapper.QrCodeOptions.BgImgOptions;
+import com.symhx.wrapper.QrCodeOptions.BgImgStyle;
+import com.symhx.wrapper.QrCodeOptions.DetectOptions;
+import com.symhx.wrapper.QrCodeOptions.DrawOptions;
+import com.symhx.wrapper.QrCodeOptions.DrawStyle;
+import com.symhx.wrapper.QrCodeOptions.ImgStyle;
+import com.symhx.wrapper.QrCodeOptions.LogoOptions;
+import com.symhx.wrapper.QrCodeOptions.LogoStyle;
+import com.symhx.wrapper.QrCodeOptions.TxtMode;
+import com.symhx.wrapper.QrCodeOptions.BgImgOptions.BgImgOptionsBuilder;
+import com.symhx.wrapper.QrCodeOptions.DetectOptions.DetectOptionsBuilder;
+import com.symhx.wrapper.QrCodeOptions.DrawOptions.DrawOptionsBuilder;
+import com.symhx.wrapper.QrCodeOptions.LogoOptions.LogoOptionsBuilder;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symhx.wrapper.QrCodeOptions.*;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * @author lj
- * @date 2020/12/11
- */
 public class QrCodeGenWrapper {
     public QrCodeGenWrapper() {
     }
@@ -36,50 +54,50 @@ public class QrCodeGenWrapper {
     }
 
     private static ByteArrayOutputStream asGif(QrCodeOptions qrCodeOptions) throws WriterException {
-        ByteArrayOutputStream byteArrayOutputStream;
+        ByteArrayOutputStream var4;
         try {
             BitMatrixEx bitMatrix = QrCodeGenerateHelper.encode(qrCodeOptions);
             List<ImmutablePair<BufferedImage, Integer>> list = QrCodeGenerateHelper.toGifImages(qrCodeOptions, bitMatrix);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             GifHelper.saveGif(list, outputStream);
-            byteArrayOutputStream = outputStream;
+            var4 = outputStream;
         } finally {
             QuickQrUtil.clear();
         }
 
-        return byteArrayOutputStream;
+        return var4;
     }
 
     private static BufferedImage asBufferedImage(QrCodeOptions qrCodeOptions) throws WriterException, IOException {
-        BufferedImage bufferedImage;
+        BufferedImage var2;
         try {
             BitMatrixEx bitMatrix = QrCodeGenerateHelper.encode(qrCodeOptions);
-            bufferedImage = QrCodeGenerateHelper.toBufferedImage(qrCodeOptions, bitMatrix);
+            var2 = QrCodeGenerateHelper.toBufferedImage(qrCodeOptions, bitMatrix);
         } finally {
             QuickQrUtil.clear();
         }
 
-        return bufferedImage;
+        return var2;
     }
 
     private static String asString(QrCodeOptions qrCodeOptions) throws WriterException, IOException {
         if (qrCodeOptions.gifQrCode()) {
             ByteArrayOutputStream outputStream = asGif(qrCodeOptions);
-            Throwable throwable = null;
+            Throwable var31 = null;
 
-            String str;
+            String var32;
             try {
-                str = Base64Util.encode(outputStream);
-            } catch (Throwable throwable1) {
-                throwable = throwable1;
-                throw throwable1;
+                var32 = Base64Util.encode(outputStream);
+            } catch (Throwable var26) {
+                var31 = var26;
+                throw var26;
             } finally {
                 if (outputStream != null) {
-                    if (throwable != null) {
+                    if (var31 != null) {
                         try {
                             outputStream.close();
-                        } catch (Throwable throwable1) {
-                            throwable.addSuppressed(throwable1);
+                        } catch (Throwable var25) {
+                            var31.addSuppressed(var25);
                         }
                     } else {
                         outputStream.close();
@@ -87,26 +105,27 @@ public class QrCodeGenWrapper {
                 }
 
             }
-            return str;
+
+            return var32;
         } else {
             BufferedImage bufferedImage = asBufferedImage(qrCodeOptions);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            Throwable throwable = null;
+            Throwable var3 = null;
 
-            String str;
+            String var4;
             try {
                 ImageIO.write(bufferedImage, qrCodeOptions.getPicType(), outputStream);
-                str = Base64Util.encode(outputStream);
-            } catch (Throwable throwable1) {
-                throwable = throwable1;
-                throw throwable1;
+                var4 = Base64Util.encode(outputStream);
+            } catch (Throwable var27) {
+                var3 = var27;
+                throw var27;
             } finally {
                 if (outputStream != null) {
-                    if (throwable != null) {
+                    if (var3 != null) {
                         try {
                             outputStream.close();
-                        } catch (Throwable throwable1) {
-                            throwable.addSuppressed(throwable1);
+                        } catch (Throwable var24) {
+                            var3.addSuppressed(var24);
                         }
                     } else {
                         outputStream.close();
@@ -114,7 +133,8 @@ public class QrCodeGenWrapper {
                 }
 
             }
-            return str;
+
+            return var4;
         }
     }
 
@@ -162,55 +182,22 @@ public class QrCodeGenWrapper {
     public static class Builder {
         private static Logger log = LoggerFactory.getLogger(QrCodeGenWrapper.Builder.class);
         private static final MatrixToImageConfig DEFAULT_CONFIG = new MatrixToImageConfig();
-        /**
-         * 内容主体
-         */
         private String msg;
-        /**
-         * 宽
-         */
         private Integer w;
-        /**
-         * 高
-         */
         private Integer h;
-        /**
-         * 编码
-         */
         private String code = "utf-8";
-        /**
-         * 内边距
-         */
         private Integer padding;
-        /**
-         * 容错 L(1),M(0),Q(3),H(2);
-         */
         private ErrorCorrectionLevel errorCorrection;
-        /**
-         * 图片类型
-         */
         private String picType;
-        /**
-         * 二维码背景操作
-         */
-        private BgImgOptions.BgImgOptionsBuilder bgImgOptions;
-        /**
-         * 二维码Logo操作
-         */
-        private LogoOptions.LogoOptionsBuilder logoOptions;
-        /**
-         * 绘图器
-         */
-        private DrawOptions.DrawOptionsBuilder drawOptions;
-        /**
-         * 检测
-         */
-        private DetectOptions.DetectOptionsBuilder detectOptions;
+        private BgImgOptionsBuilder bgImgOptions;
+        private LogoOptionsBuilder logoOptions;
+        private DrawOptionsBuilder drawOptions;
+        private DetectOptionsBuilder detectOptions;
 
         public Builder() {
             this.errorCorrection = ErrorCorrectionLevel.H;
             this.picType = "png";
-            this.bgImgOptions = BgImgOptions.builder().bgImgStyle(QrCodeOptions.BgImgStyle.OVERRIDE).opacity(0.85F);
+            this.bgImgOptions = BgImgOptions.builder().bgImgStyle(BgImgStyle.OVERRIDE).opacity(0.85F);
             this.logoOptions = LogoOptions.builder().logoStyle(LogoStyle.NORMAL).border(false).rate(12);
             this.drawOptions = DrawOptions.builder().drawStyle(DrawStyle.RECT).bgColor(Color.WHITE).preColor(Color.BLACK).diaphaneityFill(false).enableScale(false);
             this.detectOptions = DetectOptions.builder();
@@ -314,7 +301,7 @@ public class QrCodeGenWrapper {
             return this;
         }
 
-        public QrCodeGenWrapper.Builder setLogoStyle(LogoStyle logoStyle) {
+        public QrCodeGenWrapper.Builder setLogoStyle(QrCodeOptions.LogoStyle logoStyle) {
             this.logoOptions.logoStyle(logoStyle);
             return this;
         }
@@ -546,10 +533,10 @@ public class QrCodeGenWrapper {
         }
 
         public QrCodeGenWrapper.Builder setDrawStyle(String style) {
-            return this.setDrawStyle(DrawStyle.getDrawStyle(style));
+            return this.setDrawStyle(QrCodeOptions.DrawStyle.getDrawStyle(style));
         }
 
-        public QrCodeGenWrapper.Builder setDrawStyle(DrawStyle drawStyle) {
+        public QrCodeGenWrapper.Builder setDrawStyle(QrCodeOptions.DrawStyle drawStyle) {
             this.drawOptions.drawStyle(drawStyle);
             return this;
         }
@@ -688,23 +675,23 @@ public class QrCodeGenWrapper {
             qrCodeConfig.setMsg(this.getMsg());
             qrCodeConfig.setH(this.getH());
             qrCodeConfig.setW(this.getW());
-            BgImgOptions bgOp = this.bgImgOptions.build();
+            QrCodeOptions.BgImgOptions bgOp = this.bgImgOptions.build();
             if (bgOp.getBgImg() == null && bgOp.getGifDecoder() == null) {
-                qrCodeConfig.setBgImgOptions((BgImgOptions)null);
+                qrCodeConfig.setBgImgOptions((QrCodeOptions.BgImgOptions)null);
             } else {
                 qrCodeConfig.setBgImgOptions(bgOp);
             }
 
-            LogoOptions logoOp = this.logoOptions.build();
+            QrCodeOptions.LogoOptions logoOp = this.logoOptions.build();
             if (logoOp.getLogo() == null) {
-                qrCodeConfig.setLogoOptions((LogoOptions)null);
+                qrCodeConfig.setLogoOptions((QrCodeOptions.LogoOptions)null);
             } else {
                 qrCodeConfig.setLogoOptions(logoOp);
             }
 
-            DrawOptions drawOp = this.drawOptions.build();
+            QrCodeOptions.DrawOptions drawOp = this.drawOptions.build();
             qrCodeConfig.setDrawOptions(drawOp);
-            DetectOptions detectOp = this.detectOptions.build();
+            QrCodeOptions.DetectOptions detectOp = this.detectOptions.build();
             if (detectOp.getOutColor() == null && detectOp.getInColor() == null) {
                 detectOp.setInColor(drawOp.getPreColor());
                 detectOp.setOutColor(drawOp.getPreColor());

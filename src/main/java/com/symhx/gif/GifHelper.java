@@ -1,13 +1,19 @@
 package com.symhx.gif;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.List;
+
 import com.symhx.util.FileReadUtil;
 import com.symhx.util.FileWriteUtil;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Iterator;
-import java.util.List;
 
 public class GifHelper {
     public GifHelper() {

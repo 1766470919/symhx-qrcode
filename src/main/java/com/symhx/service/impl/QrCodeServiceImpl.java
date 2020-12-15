@@ -1,6 +1,7 @@
 package com.symhx.service.impl;
 
 import com.google.zxing.WriterException;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.symhx.DiyException;
 import com.symhx.request.QrCodeVO;
 import com.symhx.service.IQrCodeService;
@@ -22,6 +23,23 @@ import java.io.IOException;
  */
 @Service("qrCodeService")
 public class QrCodeServiceImpl implements IQrCodeService {
+
+    public static void main(String[] args) {
+        try {
+            String msg = "http://weixin.qq.com/r/FS9waAPEg178rUcL93oH";
+            String bg = "http://ww1.sinaimg.cn/large/8154e929gy1g8pq78mcgrg20dw0boaja.gif";
+            boolean ans = QrCodeGenWrapper.of(msg)
+                    .setW(500)
+                    .setBgImg(bg)
+                    .setBgOpacity(0.6f)
+                    .setPicType("gif")
+                    .asFile("C:\\Users\\hy\\Desktop\\code.gif");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final String HTTP_PREFIX = "http://";
     private static final String HTTPS_PREFIX = "https://";

@@ -58,17 +58,17 @@ public class NeuQuant {
         byte[] map = new byte[768];
         int[] index = new int[256];
 
-        int i;
-        for(i = 0; i < 256; index[this.network[i][3]] = i++) {
+        int k;
+        for(k = 0; k < 256; index[this.network[k][3]] = k++) {
         }
 
-        i = 0;
+        k = 0;
 
-        for(i = 0; i < 256; ++i) {
+        for (int i = 0; i < 256; ++i) {
             int j = index[i];
-            map[i++] = (byte)this.network[j][0];
-            map[i++] = (byte)this.network[j][1];
-            map[i++] = (byte)this.network[j][2];
+            map[k++] = (byte) this.network[j][0];
+            map[k++] = (byte) this.network[j][1];
+            map[k++] = (byte) this.network[j][2];
         }
 
         return map;

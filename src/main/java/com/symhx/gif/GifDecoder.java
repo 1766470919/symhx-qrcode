@@ -1,6 +1,10 @@
 package com.symhx.gif;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.BufferedInputStream;
@@ -120,16 +124,16 @@ public class GifDecoder {
                 if (iline >= this.ih) {
                     ++pass;
                     switch(pass) {
-                    case 2:
-                        iline = 4;
-                        break;
-                    case 3:
-                        iline = 2;
-                        inc = 4;
-                        break;
-                    case 4:
-                        iline = 1;
-                        inc = 2;
+                        case 2:
+                            iline = 4;
+                            break;
+                        case 3:
+                            iline = 2;
+                            inc = 4;
+                            break;
+                        case 4:
+                            iline = 1;
+                            inc = 2;
                     }
                 }
 
@@ -446,40 +450,40 @@ public class GifDecoder {
         while(!done && !this.err()) {
             int code = this.read();
             switch(code) {
-            case 0:
-                break;
-            case 33:
-                code = this.read();
-                switch(code) {
-                case 249:
-                    this.readGraphicControlExt();
-                    continue;
-                case 255:
-                    this.readBlock();
-                    String app = "";
+                case 0:
+                    break;
+                case 33:
+                    code = this.read();
+                    switch(code) {
+                        case 249:
+                            this.readGraphicControlExt();
+                            continue;
+                        case 255:
+                            this.readBlock();
+                            String app = "";
 
-                    for(int i = 0; i < 11; ++i) {
-                        app = app + (char)this.block[i];
-                    }
+                            for(int i = 0; i < 11; ++i) {
+                                app = app + (char)this.block[i];
+                            }
 
-                    if (app.equals("NETSCAPE2.0")) {
-                        this.readNetscapeExt();
-                    } else {
-                        this.skip();
+                            if (app.equals("NETSCAPE2.0")) {
+                                this.readNetscapeExt();
+                            } else {
+                                this.skip();
+                            }
+                            continue;
+                        default:
+                            this.skip();
+                            continue;
                     }
-                    continue;
+                case 44:
+                    this.readImage();
+                    break;
+                case 59:
+                    done = true;
+                    break;
                 default:
-                    this.skip();
-                    continue;
-                }
-            case 44:
-                this.readImage();
-                break;
-            case 59:
-                done = true;
-                break;
-            default:
-                this.status = 1;
+                    this.status = 1;
             }
         }
 
@@ -595,7 +599,9 @@ public class GifDecoder {
         this.lastRect = new Rectangle(this.ix, this.iy, this.iw, this.ih);
         this.lastImage = this.image;
         this.lastBgColor = this.bgColor;
+//        int dispose = false;
         boolean transparency = false;
+//        int delay = false;
         this.lct = null;
     }
 
